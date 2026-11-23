@@ -124,6 +124,16 @@ def test_numbered_list() -> None:
         assert list(parser.transform(iter([text]))) == expectedlist
 
 
+def test_markdown_empty_bullet_does_not_consume_next_item() -> None:
+    parser = MarkdownListOutputParser()
+    for marker in ("-", "*"):
+        text = f"{marker}\n{marker} apple\n{marker} banana"
+        expected = ["apple", "banana"]
+        assert parser.parse(text) == expected
+        assert list(parser.transform(iter(text))) == [[item] for item in expected]
+        assert list(parser.transform(iter([text]))) == [[item] for item in expected]
+
+
 def test_markdown_list() -> None:
     parser = MarkdownListOutputParser()
     text1 = (
